@@ -1,14 +1,11 @@
 unsigned long startTime;
-unsigned long sensor1Time;
-int sensor1Value;
-
-char buffer[20] = {0};
-
+unsigned long currentTime;
+unsigned long timeBefore; 
+int count;
 
 // the setup routine runs once when you press reset:
 void setup() {
-  // initialize serial communication at 9600 bits per second:
-  Serial.begin(19200);
+  Serial.begin(250000);
   startTime = 0;
   waitForSignal();
 }
@@ -16,12 +13,12 @@ void setup() {
 // the loop routine runs over and over again forever:
 void loop() {
   // TODO: what happens when micros() overflows?
-  if(micros() - startTime < 1000000) {
-    sensor1Value = analogRead(A0);
-    sensor1Time = micros();
-    Serial.println("1," + String(sensor1Time) + ',' + String(sensor1Value));
+  if(count < 100) {
+    currentTime = micros();
+    Serial.println(currentTime - timeBefore);
+    timeBefore =  currentTime;
+    count++;
   } else {
-    startTime = 0;
     waitForSignal();
   }
 }
@@ -31,10 +28,16 @@ void waitForSignal() {
     Serial.println('A');
     delay(300);
   }
+
+  // Clear buffer of all input
   int available = Serial.available();
   for(int i = 0; i < available; i++) {
     Serial.read();
   }
-  startTime = micros();   
+
+  // Setup state
+  startTime = micros();
+  timeBefore = startTime;
+  count = 0;
 }
 
