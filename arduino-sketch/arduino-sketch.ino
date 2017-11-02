@@ -15,8 +15,8 @@ void loop() {
   // TODO: what happens when micros() overflows?
   if(count < 100) {
     currentTime = micros();
-    Serial.println(currentTime - timeBefore);
-    timeBefore =  currentTime;
+    Serial.println(currentTime);
+    timeBefore = currentTime;
     count++;
   } else {
     waitForSignal();
@@ -39,5 +39,7 @@ void waitForSignal() {
   startTime = micros();
   timeBefore = startTime;
   count = 0;
+  Serial.println(startTime);
+
 }
 
