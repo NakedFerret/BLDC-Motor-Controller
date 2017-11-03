@@ -1,6 +1,6 @@
 unsigned long startTime;
 unsigned long currentTime;
-unsigned long timeBefore; 
+int sensor0Value;
 int count;
 
 // the setup routine runs once when you press reset:
@@ -15,8 +15,8 @@ void loop() {
   // TODO: what happens when micros() overflows?
   if(count < 100) {
     currentTime = micros();
-    Serial.println(currentTime);
-    timeBefore = currentTime;
+    sensor0Value = analogRead(A0);
+    Serial.println(String(currentTime) + ", " + String(sensor0Value));
     count++;
   } else {
     waitForSignal();
@@ -37,7 +37,6 @@ void waitForSignal() {
 
   // Setup state
   startTime = micros();
-  timeBefore = startTime;
   count = 0;
   Serial.println(startTime);
 
