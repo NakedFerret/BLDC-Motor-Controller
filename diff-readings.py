@@ -1,4 +1,5 @@
 import argparse
+import sys
 
 parser = argparse.ArgumentParser(description='Parse voltage readings and show diff in time between readings.')
 
@@ -6,7 +7,10 @@ parser.add_argument('file', help='which file to parse')
 
 args = parser.parse_args()
 
-f = open(args.file)
+if (args.file == '-'):
+  f = sys.stdin
+else:
+  f = open(args.file)
 
 last = 0;
 for l in f:
