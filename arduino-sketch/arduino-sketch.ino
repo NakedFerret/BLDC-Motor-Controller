@@ -1,6 +1,11 @@
 unsigned long startTime;
 unsigned long currentTime;
 int sensor0Value;
+int sensor1Value;
+int sensor2Value;
+int sensor3Value;
+int sensor4Value;
+int sensor5Value;
 int count;
 
 
@@ -30,7 +35,14 @@ void loop() {
   if(count < 100) {
     currentTime = micros();
     sensor0Value = analogRead(A0);
-    Serial.println(String(currentTime) + ", " + String(sensor0Value));
+    sensor1Value = analogRead(A1);
+    sensor2Value = analogRead(A2);
+    sensor3Value = analogRead(A3);
+    sensor4Value = analogRead(A4);
+    sensor5Value = analogRead(A5);
+    Serial.println(String(currentTime) + 
+      ", " + String(sensor0Value) 
+    );
     count++;
   } else {
     waitForSignal();
