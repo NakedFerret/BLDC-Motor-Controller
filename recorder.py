@@ -8,17 +8,17 @@ parser.add_argument('baud', type=int, help='baud rate of the port')
 
 args = parser.parse_args()
 
-print 'Listening to %s with baud rate: %d' % (args.port, args.baud)
+print 'Recorder: Listening to %s with baud rate: %d' % (args.port, args.baud)
 port = serial.Serial(args.port, baudrate=args.baud)
 
-print 'Waiting for input'
+print 'Recorder: Waiting for input'
 
 while(True):
   text = port.readline()
   if text.strip() == 'A':
     break
 
-print 'Sending start signal'
+print 'Recorder: Sending start signal'
 
 port.write('A');
 
@@ -31,7 +31,7 @@ while(True):
   else:
     break
 
-print 'Got these readings'
+print 'Recorder: Got these readings'
 
 for r in readings:
   print r
