@@ -1,4 +1,12 @@
-unsigned long startTime;
+// 't' + time: u long - 5 bytes
+// ',' + sensor0: int - 3 bytes
+// ',' + sensor1: int - 3 bytes
+// ',' + sensor2: int - 3 bytes
+// ',' + sensor3: int - 3 bytes
+// ',' + sensor4: int - 3 bytes
+// ',' + sensor5: int - 3 bytes 
+// ';'                - 1 byte
+unsigned char messageArray[24];
 unsigned long currentTime;
 int sensor0Value;
 int sensor1Value;
@@ -7,7 +15,6 @@ int sensor3Value;
 int sensor4Value;
 int sensor5Value;
 int count;
-
 
 // defines for setting and clearing register bits
 #ifndef cbi
@@ -23,16 +30,32 @@ void setup() {
   sbi(ADCSRA,ADPS2) ;
   cbi(ADCSRA,ADPS1) ;
   cbi(ADCSRA,ADPS0) ;
+
+  messageArray[0] = 't';
+  // 4 bytes for time
+  messageArray[5] = ',';
+  // 2 bytes for sensor0
+  messageArray[8] = ',';
+  // 2 bytes for sensor1
+  messageArray[11] = ',';
+  // 2 bytes for sensor2
+  messageArray[14] = ',';
+  // 2 bytes for sensor3
+  messageArray[17] = ',';
+  // 2 bytes for sensor4
+  messageArray[20] = ',';
+  // 2 bytes for sensor5
+  messageArray[23] = ';';
   
   Serial.begin(250000);
-  startTime = 0;
+  count = 0;
   waitForSignal();
 }
 
 // the loop routine runs over and over again forever:
 void loop() {
   // TODO: what happens when micros() overflows?
-  if(count < 100) {
+  if(count < 1000) {
     currentTime = micros();
     sensor0Value = analogRead(A0);
     sensor1Value = analogRead(A1);
@@ -40,9 +63,14 @@ void loop() {
     sensor3Value = analogRead(A3);
     sensor4Value = analogRead(A4);
     sensor5Value = analogRead(A5);
-    Serial.println(String(currentTime) + 
-      ", " + String(sensor0Value) 
-    );
+    writeUnsignedLongToByteArray(currentTime, messageArray, 1);
+    writeIntToByteArray(sensor0Value, messageArray, 6);
+    writeIntToByteArray(sensor1Value, messageArray, 9);
+    writeIntToByteArray(sensor2Value, messageArray, 12);
+    writeIntToByteArray(sensor3Value, messageArray, 15);
+    writeIntToByteArray(sensor4Value, messageArray, 18);
+    writeIntToByteArray(sensor5Value, messageArray, 21);
+    Serial.write(messageArray, 24);
     count++;
   } else {
     waitForSignal();
@@ -61,10 +89,18 @@ void waitForSignal() {
     Serial.read();
   }
 
-  // Setup state
-  startTime = micros();
   count = 0;
-  Serial.println(startTime);
+}
 
+void writeUnsignedLongToByteArray(unsigned long input, byte a[], int start) {
+ a[start] = (int)((input >> 24) & 0xFF);
+ a[start + 1] = (int)((input >> 16) & 0xFF);
+ a[start + 2] = (int)((input >> 8) & 0XFF);
+ a[start + 3] = (int)((input & 0XFF));
+}
+
+void writeIntToByteArray(int input, byte a[], int start) {
+ a[start] = (int)((input >> 8) & 0XFF);
+ a[start + 1] = (int)((input & 0XFF));
 }
 
