@@ -47,7 +47,7 @@ void setup() {
   // 2 bytes for sensor5
   messageArray[23] = ';';
   
-  Serial.begin(250000);
+  Serial.begin(500000);
   count = 0;
   waitForSignal();
 }
