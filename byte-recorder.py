@@ -1,4 +1,5 @@
 import serial
+import struct
 import argparse
 
 parser = argparse.ArgumentParser(description='Byte Record voltage readings.')
@@ -36,7 +37,12 @@ while(True):
     break
 
   info = port.read(10)
+  timeValue = struct.unpack('>L', info[1:5])[0]
+  # unpacking from short cause Uno uses 2 bytes for ints
+  sensor0Value = struct.unpack('>h', info[8:10])[0]
+
   print map(bin, bytearray(info))
+  print (timeValue, sensor0Value)
   print count
   count = count + 1
 
