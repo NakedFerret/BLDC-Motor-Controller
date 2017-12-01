@@ -14,7 +14,7 @@ port = serial.Serial(args.port, baudrate=args.baud)
 
 print 'Recorder: Listening for start'
 
-readings = list(range(1000))
+readings = list(range(5000))
 
 count = 0
 while(True):
@@ -35,7 +35,7 @@ port.flush();
 
 count = 0
 while(True):
-  if count >= 1000:
+  if count >= 5000:
     break
 
   info = port.read(24)
@@ -52,6 +52,6 @@ while(True):
   count = count + 1
 
 for r in readings:
-  print r
+  print "%d,%d" % r[1:3]
 
 port.close() 

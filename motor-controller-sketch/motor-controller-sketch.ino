@@ -27,9 +27,9 @@ int count;
 // the setup routine runs once when you press reset:
 void setup() {
   // set prescale to 16
-  sbi(ADCSRA,ADPS2) ;
-  cbi(ADCSRA,ADPS1) ;
-  cbi(ADCSRA,ADPS0) ;
+  sbi(ADCSRA,ADPS2);
+  cbi(ADCSRA,ADPS1);
+  cbi(ADCSRA,ADPS0);
 
   messageArray[0] = 't';
   // 4 bytes for time
@@ -55,7 +55,7 @@ void setup() {
 // the loop routine runs over and over again forever:
 void loop() {
   // TODO: what happens when micros() overflows?
-  if(count < 1000) {
+  if(count < 5000) {
     currentTime = micros();
     sensor0Value = analogRead(A0);
     sensor1Value = analogRead(A1);
