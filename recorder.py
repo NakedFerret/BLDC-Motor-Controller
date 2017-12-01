@@ -1,6 +1,9 @@
 import serial
 import struct
 import argparse
+import matplotlib
+matplotlib.use('WXAgg')
+import matplotlib.pyplot as plt
 
 parser = argparse.ArgumentParser(description='Recorder: Record voltage readings.')
 
@@ -25,7 +28,7 @@ while(True):
   text = port.readline()
 
   if text.strip() == 'A':
-    print 'Found one of %d' % count
+    print 'Recorder: Found one of %d' % count
     count = count + 1
 
 print 'Recorder: Sending start signal'
@@ -51,7 +54,14 @@ while(True):
   readings[count] = (count, timeValue, sensor0Value, sensor1Value, sensor2Value, sensor3Value, sensor4Value, sensor5Value)
   count = count + 1
 
+port.close() 
+
 for r in readings:
   print "%d,%d" % r[1:3]
 
-port.close() 
+time = map(lambda r: r[1], readings)
+voltage = map(lambda r: r[2], readings)
+
+plt.plot(time, voltage)
+
+plt.show()
