@@ -57,11 +57,23 @@ while(True):
 port.close() 
 
 for r in readings:
-  print "%d,%d" % r[1:3]
+  print "%d,%d,%d" % r[1:4]
 
 time = map(lambda r: r[1], readings)
-voltage = map(lambda r: r[2], readings)
+inputVoltage = map(lambda r: r[2], readings)
+amps = map(lambda r: ((r[3] / 1024.0) - 0.5) * 6, readings)
 
-plt.plot(time, voltage)
+plt.title('Motor Control Session')
+
+plt.subplot(2, 1, 1)
+plt.plot(time, inputVoltage)
+plt.ylabel('Input Voltage')
+plt.xlabel('time (us)');
+
+plt.subplot(2, 1, 2)
+plt.plot(time, amps)
+plt.ylabel('Amps')
+plt.xlabel('time (us)');
 
 plt.show()
+
