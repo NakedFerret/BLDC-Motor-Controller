@@ -24,6 +24,7 @@ int count;
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
 #endif
 
+
 // the setup routine runs once when you press reset:
 void setup() {
   // set prescale to 16
@@ -48,7 +49,6 @@ void setup() {
   messageArray[23] = ';';
   
   Serial.begin(500000);
-  count = 0;
   waitForSignal();
 }
 
@@ -57,12 +57,16 @@ void loop() {
   // TODO: what happens when micros() overflows?
   if(count < 5000) {
     currentTime = micros();
+    
     sensor0Value = analogRead(A0);
     sensor1Value = analogRead(A1);
     sensor2Value = analogRead(A2);
     sensor3Value = analogRead(A3);
     sensor4Value = analogRead(A4);
     sensor5Value = analogRead(A5);
+
+    adjustMotorSpeed(sensor0Value);
+    
     writeUnsignedLongToByteArray(currentTime, messageArray, 1);
     writeIntToByteArray(sensor0Value, messageArray, 6);
     writeIntToByteArray(sensor1Value, messageArray, 9);
@@ -71,6 +75,7 @@ void loop() {
     writeIntToByteArray(sensor4Value, messageArray, 18);
     writeIntToByteArray(sensor5Value, messageArray, 21);
     Serial.write(messageArray, 24);
+    
     count++;
   } else {
     waitForSignal();
@@ -78,6 +83,7 @@ void loop() {
 }
 
 void waitForSignal() {
+  adjustMotorSpeed(0);
   while(Serial.available() <= 0) {
     Serial.println('A');
     delay(300);
@@ -90,6 +96,10 @@ void waitForSignal() {
   }
 
   count = 0;
+}
+
+void adjustMotorSpeed(int input){
+  analogWrite(3, pow(input / 1024.0, 7) * 255);
 }
 
 void writeUnsignedLongToByteArray(unsigned long input, byte a[], int start) {
