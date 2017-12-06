@@ -15,6 +15,7 @@ int sensor3Value;
 int sensor4Value;
 int sensor5Value;
 int count;
+int input;
 
 // defines for setting and clearing register bits
 #ifndef cbi
@@ -65,10 +66,12 @@ void loop() {
     sensor4Value = analogRead(A4);
     sensor5Value = analogRead(A5);
 
-    adjustMotorSpeed(sensor0Value);
+    input = pow(sensor0Value / 1024.0, 7) * 255;
+
+    adjustMotorSpeed(input);
     
     writeUnsignedLongToByteArray(currentTime, messageArray, 1);
-    writeIntToByteArray(sensor0Value, messageArray, 6);
+    writeIntToByteArray(input, messageArray, 6);
     writeIntToByteArray(sensor1Value, messageArray, 9);
     writeIntToByteArray(sensor2Value, messageArray, 12);
     writeIntToByteArray(sensor3Value, messageArray, 15);
@@ -99,7 +102,7 @@ void waitForSignal() {
 }
 
 void adjustMotorSpeed(int input){
-  analogWrite(3, pow(input / 1024.0, 7) * 255);
+  analogWrite(3, input);
 }
 
 void writeUnsignedLongToByteArray(unsigned long input, byte a[], int start) {
